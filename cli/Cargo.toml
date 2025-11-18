@@ -1,0 +1,20 @@
+[package]
+name = "nixdle-cli"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+description.workspace = true
+readme = "../README.md"
+repository.workspace = true
+license.workspace = true
+keywords.workspace = true
+categories.workspace = true
+
+[[bin]]
+name = "nixdle"
+path = "src/main.rs"
+test = false
+doctest = false
+bench = false
+doc = false
+required-features = []

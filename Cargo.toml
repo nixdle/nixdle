@@ -1,0 +1,21 @@
+[workspace]
+resolver = "3"
+members = ["lib", "cli"]
+
+[workspace.package]
+version = "0.0.1"
+authors = ["adam <me@adamperkowski.dev>"]
+edition = "2024"
+description = "wordle but it's nix functions"
+readme = "README.md"
+repository = "https://github.com/adamperkowski/nixdle"
+license = "MIT"
+keywords = ["nix", "games"]
+categories = ["command-line-utilities", "games", "web-programming"]
+
+[profile.release]
+lto = "fat"
+codegen-units = 2
+panic = "abort"
+strip = true
+opt-level = "z"

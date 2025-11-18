@@ -1,0 +1,27 @@
+{
+  callPackage,
+  mkShell,
+  clippy,
+  rustfmt,
+  rust-analyzer,
+  shellcheck,
+}:
+
+let
+  mainPkg = callPackage ./default.nix { };
+  packages = [
+    clippy
+    rustfmt
+    rust-analyzer
+    shellcheck
+  ]
+  ++ mainPkg.nativeBuildInputs;
+in
+mkShell {
+  nativeBuildInputs = packages;
+  shellHook = ''
+    echo -ne "-----------------------------------\n "
+    echo -n "${toString (map (pkg: "• ${pkg.name}\n") packages)}"
+    echo "-----------------------------------"
+  '';
+}

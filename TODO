@@ -1,0 +1,13 @@
+/tmp/nixdle.lock contains the date returned from the server, the number of max attempts and current
+attempts with the words inputted
+
+on connect, the server returns: nix commit, date, version, attempt url, number of possible lib path parts, attempts needed to get a part
+on each attempt, returns date, if successful
+if successful, returns word, description, cli deletes the lock file
+if not, current path parts, if number of args in guessed is more, less or equal to needed, if from or to matches
+
+the lock file HAS to be hashed with the nix commit to avoid tampering
+
+standalone non-server version maybe someday
+
+check if guessed is same as needed alias
