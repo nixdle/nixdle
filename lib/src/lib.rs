@@ -4,8 +4,10 @@ use rand::prelude::IndexedRandom;
 use serde::Deserialize;
 use sqlx::{prelude::FromRow, types::chrono};
 
+#[allow(dead_code)]
 const NEXT_CLUE_ATTEMPTS: u8 = 5;
 
+#[allow(dead_code)]
 #[derive(Debug, FromRow)]
 pub struct Game {
   id: bool,
@@ -67,7 +69,24 @@ pub fn parse_functions(data: &str) -> Result<Vec<Function>, serde_json::Error> {
   )
 }
 
-pub fn new(functions: Vec<Function>) -> Game {
+pub fn parse_builtin_types(data: &str) -> Result<Vec<(String, String)>, serde_json::Error> {
+  let map: serde_json::Value = serde_json::from_str(data)?;
+  let mut result = Vec::new();
+
+  if let serde_json::Value::Object(obj) = map {
+    for (key, value) in obj {
+      if let serde_json::Value::Object(inner_obj) = value
+        && let Some(serde_json::Value::String(fn_type)) = inner_obj.get("fn_type")
+      {
+        result.push((key, fn_type.clone()));
+      }
+    }
+  }
+
+  Ok(result)
+}
+
+pub fn new(functions: Vec<Function>, builtin_types: Vec<(String, String)>) -> Game {
   let thread_rng = &mut rand::rng();
   loop {
     let func = functions.choose(thread_rng).unwrap();
@@ -92,77 +111,98 @@ pub fn new(functions: Vec<Function>) -> Game {
       .unwrap_or(0);
 
     if let Some(signature) = func.meta.signature.as_ref() {
-      let s = signature.trim().to_lowercase();
-      let sig = match s.split_once(" :: ").map(|(_, sig)| sig) {
-        Some(sig) => sig,
+      let (first, last) = match signature_to_types(signature) {
+        Some((f, l)) => (f, l),
         None => {
           continue;
         }
       };
-
-      let parts: Vec<&str> = sig.split(" -> ").map(|p| p.trim()).collect();
-
-      let first = match parts.first() {
-        Some(f) if f.starts_with('{') => "attrset",
-        Some(f) => f,
-        None => {
-          continue;
-        }
-      };
-      let last = match parts.last() {
-        Some(l) if l.ends_with('}') => "attrset",
-        Some(l) => l,
-        None => {
-          continue;
-        }
-      };
-
-      if first.starts_with('(') || first.contains(' ') || last.ends_with(')') || last.contains(' ')
-      {
-        continue;
-      }
 
       return Game {
         id: true,
         func: func.meta.path.join("."),
         description,
         args,
-        input: first.to_string(),
-        output: last.to_string(),
+        input: first,
+        output: last,
         nix_commit: "".to_string(), // TODO
         created_at: chrono::Utc::now().naive_utc(),
       };
-    } else {
-      for alias in func.meta.aliases.clone().unwrap_or_default() {
-        if alias.len() == 3
-          && alias[0] == "lib"
-          && ["attrset", "string", "list"].contains(&alias[1].trim_end_matches('s'))
-        {
-          return Game {
-            id: true,
-            func: func.meta.path.join("."),
-            description: description,
-            args,
-            input: alias[1].trim_end_matches('s').to_string(),
-            output: "unknown (TODO)".to_string(),
-            nix_commit: "".to_string(), // TODO
-            created_at: chrono::Utc::now().naive_utc(),
-          };
-        }
-      }
+    } else if func.meta.path.len() == 2 && func.meta.path[0] == "builtins" {
+      let builtin_name = &func.meta.path[1];
 
-      if func.meta.path.len() == 2 && func.meta.path[0] == "builtins" {
+      if let Some((input, output)) = builtin_types
+        .iter()
+        .find(|(name, _)| name == builtin_name)
+        .and_then(|(_, fn_type)| signature_to_types(fn_type))
+      {
         return Game {
           id: true,
           func: func.meta.path.join("."),
-          description: description,
+          description,
           args,
-          input: "unknown (TODO)".to_string(),
-          output: "unknown (TODO)".to_string(),
+          input,
+          output,
           nix_commit: "".to_string(), // TODO
           created_at: chrono::Utc::now().naive_utc(),
         };
       }
+    } else {
+      for alias in func.meta.aliases.clone().unwrap_or_default() {
+        if alias.len() == 2 && alias[0] == "builtins" {
+          let builtin_name = &alias[1];
+
+          if let Some((input, output)) = builtin_types
+            .iter()
+            .find(|(name, _)| name == builtin_name)
+            .and_then(|(_, fn_type)| signature_to_types(fn_type))
+          {
+            return Game {
+              id: true,
+              func: func.meta.path.join("."),
+              description,
+              args,
+              input,
+              output,
+              nix_commit: "".to_string(), // TODO
+              created_at: chrono::Utc::now().naive_utc(),
+            };
+          }
+        }
+      }
     }
   }
+}
+
+fn signature_to_types(signature: &str) -> Option<(String, String)> {
+  let s = signature.trim().to_lowercase();
+  let sig = match s.split_once(" :: ").map(|(_, sig)| sig) {
+    Some(sig) => sig,
+    None => {
+      return None;
+    }
+  };
+
+  let parts: Vec<&str> = sig.split(" -> ").map(|p| p.trim()).collect();
+
+  let first = match parts.first() {
+    Some(f) if f.starts_with('{') => "attrset",
+    Some(f) => f,
+    None => {
+      return None;
+    }
+  };
+  let last = match parts.last() {
+    Some(l) if l.ends_with('}') => "attrset",
+    Some(l) => l,
+    None => {
+      return None;
+    }
+  };
+
+  if first.starts_with('(') || first.contains(' ') || last.ends_with(')') || last.contains(' ') {
+    return None;
+  }
+
+  Some((first.to_string(), last.to_string()))
 }

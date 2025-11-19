@@ -23,7 +23,13 @@
       packages = forAllSystems (pkgs: rec {
         default = nixdle;
         nixdle = pkgs.callPackage ./nix/default.nix { };
-        data = noogle.packages.${pkgs.stdenv.hostPlatform.system}.data-json;
+        data = pkgs.callPackage ./nix/data.nix {
+          inherit (noogle.packages.${pkgs.stdenv.hostPlatform.system})
+            pasta
+            pesto
+            salt
+            ;
+        };
       });
 
       devShells = forAllSystems (pkgs: {

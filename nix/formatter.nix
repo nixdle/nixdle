@@ -23,6 +23,10 @@ treefmt.withConfig {
       };
       rustfmt = {
         command = "rustfmt";
+        options = [
+          "--edition"
+          "2024"
+        ];
         includes = [ "*.rs" ];
       };
       shfmt = {
