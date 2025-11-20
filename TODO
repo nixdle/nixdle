@@ -1,13 +1,11 @@
-/tmp/nixdle.lock contains the date returned from the server, the number of max attempts and current
-attempts with the words inputted
+this is stuff that's on the radar but not currently being worked on
+if you want to help out, open a PR or an issue !!!!!!!!!
 
-on connect, the server returns: nix commit, date, version, attempt url, number of possible lib path parts, attempts needed to get a part
-on each attempt, returns date, if successful
-if successful, returns word, description, cli deletes the lock file
-if not, current path parts, if number of args in guessed is more, less or equal to needed, if from or to matches
+lib:
+- write unit tests
+- implement better error handling
+- add logging with tracing
+- improve documentation (add embedded examples too)
 
-the lock file HAS to be hashed with the nix commit to avoid tampering
-
-standalone non-server version maybe someday
-
-check if guessed is same as needed alias
+i think that's it for now
+if you have any other ideas or suggestions, you know what to do !!!!

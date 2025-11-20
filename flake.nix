@@ -22,8 +22,9 @@
     {
       packages = forAllSystems (pkgs: rec {
         default = nixdle;
-        nixdle = pkgs.callPackage ./nix/default.nix { };
-        data = pkgs.callPackage ./nix/data.nix {
+        nixdle = pkgs.callPackage ./nix/packages/cli.nix { };
+        server = pkgs.callPackage ./nix/packages/server.nix { inherit data; };
+        data = pkgs.callPackage ./nix/packages/data.nix {
           inherit (noogle.packages.${pkgs.stdenv.hostPlatform.system})
             pasta
             pesto

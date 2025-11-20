@@ -1,6 +1,7 @@
 [workspace]
 resolver = "3"
-members = ["lib", "cli"]
+members = ["lib", "cli", "server"]
+default-members = ["lib", "cli"]
 
 [workspace.package]
 version = "0.0.1"
@@ -12,6 +13,14 @@ repository = "https://github.com/adamperkowski/nixdle"
 license = "MIT"
 keywords = ["nix", "games"]
 categories = ["command-line-utilities", "games", "web-programming"]
+
+[workspace.dependencies.nixdle]
+path = "lib"
+
+[workspace.dependencies.serde]
+version = "1.0"
+default-features = false
+features = ["derive"]
 
 [profile.release]
 lto = "fat"

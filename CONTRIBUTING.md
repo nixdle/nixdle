@@ -28,7 +28,7 @@ pretty cool huh.
 ## formatting
 [formatting]: #formatting
 
-we use [treefmt] treefmt] ([configured in nix][treefmt config]) to maintain consistent code formatting across the project.
+we use [treefmt][treefmt] ([configured in nix][treefmt config]) to maintain consistent code formatting across the project.
 to automatically format all files, run:
 
 ```sh
@@ -42,14 +42,16 @@ you can use either [nix] or [cargo] to build the main `nixdle` binary and [cargo
 with nix, run:
 
 ```sh
-nix build .#nixdle # for the binary
+nix build .#nixdle # for the CLI binary
+nix build .#server # for the example server binary
 nix build .#data   # for the dataset
 ```
 
 with cargo, run:
 
 ```sh
-cargo build --bin nixdle
+cargo build --bin nixdle                         # for the CLI binary
+cargo build --bin nixdle-server -p nixdle-server # for the example server binary
 ```
 
 to run the test suite, use:
@@ -68,9 +70,10 @@ the script checks the following rules:
 - the scope must be one of the following:
   - `cli`
   - `lib`
-  - `docs`
+  - `server`
   - `nix`
   - `ci`
+  - `docs`
   - `chore`
 - the message must start and end with a lowercase letter
 - first line (the header) must not exceed 50 characters

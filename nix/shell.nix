@@ -8,7 +8,7 @@
 }:
 
 let
-  mainPkg = callPackage ./default.nix { };
+  mainPkg = callPackage ./packages/cli.nix { };
   packages = [
     clippy
     rustfmt

@@ -4,15 +4,15 @@
 }:
 
 let
-  p = (lib.importTOML ../Cargo.toml).workspace.package;
+  p = (lib.importTOML ../../Cargo.toml).workspace.package;
 in
 rustPlatform.buildRustPackage {
   pname = "nixdle";
   inherit (p) version;
 
-  src = ../.;
+  src = ../..;
 
-  cargoLock.lockFile = ../Cargo.lock;
+  cargoLock.lockFile = ../../Cargo.lock;
   cargoBuildFlags = "--package nixdle-cli --bin nixdle";
 
   doCheck = false;

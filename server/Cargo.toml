@@ -1,0 +1,33 @@
+[package]
+name = "nixdle-server"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+description.workspace = true
+readme = "../README.md"
+repository.workspace = true
+license.workspace = true
+keywords.workspace = true
+categories.workspace = true
+
+[[bin]]
+name = "nixdle-server"
+path = "src/main.rs"
+test = false
+doctest = false
+bench = false
+doc = false
+
+[dependencies.nixdle]
+workspace = true
+
+[dependencies.axum]
+version = "0.8.7"
+default-features = false
+features = ["http1", "json", "tokio"]
+[dependencies.serde]
+workspace = true
+[dependencies.tokio]
+version = "1"
+default-features = false
+features = ["macros", "net", "rt-multi-thread"]

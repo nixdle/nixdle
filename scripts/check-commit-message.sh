@@ -11,7 +11,7 @@ if [ "$#" -ne 1 ]; then
 fi
 
 INPUT="$1"
-ALLOWED_SCOPES=("cli" "lib" "docs" "nix" "ci" "chore")
+ALLOWED_SCOPES=("cli" "lib" "server" "nix" "ci" "docs" "chore")
 
 check_message() {
   local message="$1"
