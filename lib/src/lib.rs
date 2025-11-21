@@ -74,7 +74,7 @@ impl State {
       attempt_url,
       possible_clues: game.get_clues().len() as u8,
       rules: format!(
-        "you can guess by full path (e.g. 'lib.mapAttrs')\nor by name (e.g. 'substring' for 'builtins.substring')\nafter each guess, you'll see how close you were to the actual function\nevery {} attempts, you'll get a new path clue",
+        "you can guess by full path (e.g. 'lib.replaceStrings')\nor by name (e.g. 'substring' for 'builtins.substring')\nafter each guess, you'll see how close you were to the actual function\nevery {} attempts, you'll get a new path clue",
         NEXT_CLUE_ATTEMPTS
       ),
       version: env!("CARGO_PKG_VERSION").to_string(),
