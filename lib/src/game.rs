@@ -1,5 +1,3 @@
-#![allow(dead_code)]
-
 use crate::function::Type;
 
 /// represents a game instance
@@ -21,8 +19,6 @@ pub struct Game {
   output: Type,
   /// nix commit hash
   nix_commit: String,
-  /// total number of successful games
-  successes: i32,
   /// when the game was initialized
   created_at: chrono::NaiveDateTime,
 }
@@ -37,7 +33,6 @@ impl Game {
       input,
       output,
       nix_commit: String::new(), // TODO: implement this
-      successes: 0,
       created_at: chrono::Utc::now().naive_utc(),
     }
   }
@@ -66,9 +61,6 @@ impl Game {
   }
   pub fn get_nix_commit(&self) -> &str {
     &self.nix_commit
-  }
-  pub fn get_successes(&self) -> i32 {
-    self.successes
   }
   pub fn get_date(&self) -> String {
     self.created_at.format("%Y-%m-%d").to_string()

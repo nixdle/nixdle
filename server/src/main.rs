@@ -6,16 +6,10 @@ use axum::{
 };
 use std::{env, fs};
 
-use nixdle::{State as GameState, parse_builtin_types, parse_functions_filtered};
+use nixdle::{State as GameState, api::AttemptData, parse_builtin_types, parse_functions_filtered};
 
 const HOSTNAME: &str = "0.0.0.0:8000";
 const HOST: &str = "http://0.0.0.0:8000";
-
-#[derive(serde::Deserialize)]
-struct AttemptData {
-  input: String,
-  attempts: u8,
-}
 
 #[tokio::main]
 async fn main() {
@@ -26,12 +20,14 @@ async fn main() {
   #[cfg(debug_assertions)]
   println!("using {} as data dir", data_dir);
 
-  let functions =
-    parse_functions_filtered(&fs::read_to_string(format!("{}/functions.json", data_dir)).unwrap())
-      .unwrap();
   let builtin_types =
     parse_builtin_types(&fs::read_to_string(format!("{}/builtin_types.json", data_dir)).unwrap())
       .unwrap();
+  let functions = parse_functions_filtered(
+    &builtin_types,
+    &fs::read_to_string(format!("{}/functions.json", data_dir)).unwrap(),
+  )
+  .unwrap();
 
   let mut game_state = GameState::new(functions, builtin_types);
   game_state.init_random_game();
@@ -51,6 +47,7 @@ async fn main() {
 }
 
 async fn start_handler(State(state): State<GameState>) -> impl IntoResponse {
+  std::thread::sleep(std::time::Duration::from_millis(1000));
   Json(state.start_game(format!("{}/attempt", HOST)))
 }
 
@@ -59,5 +56,6 @@ async fn attempt_handler(
   Json(data): Json<AttemptData>,
 ) -> impl IntoResponse {
   let response = state.attempt_game(&data.input, data.attempts);
-  Json(response.unwrap())
+  std::thread::sleep(std::time::Duration::from_millis(500));
+  Json(response)
 }

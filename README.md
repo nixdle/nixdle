@@ -8,10 +8,23 @@
 
 the "official" nixdle instance is hosted at [adamperkowski.dev/api/nixdle]
 
+as you can probably see, this README and docs are almost non-existent and since the project is still a baby, pls give us some time to improve them :D
+
+## how to play
+[how to play]: #how-to-play
+
+to play nixdle, simply run
+
+```sh
+nix run github:nixdle/nixdle
+```
+
 ## contributing
 [contributing]: #contributing
 
-see the [contributing guidelines]
+if you're looking to contribute to nixdle, might be wosth to check out the [todo list] first!
+
+also pls see the [contributing guidelines]
 
 ## thanks to <3
 [thanks to]: #thanks
@@ -19,5 +32,6 @@ see the [contributing guidelines]
 - [noogle] for dataset generation tools that made this possible (pls stop using flake-parts tho)
 
 [adamperkowski.dev/api/nixdle]: https://adamperkowski.dev/api/nixdle
+[todo list]: ./TODO
 [contributing guidelines]: CONTRIBUTING.md
 [noogle]: https://github.com/nix-community/noogle

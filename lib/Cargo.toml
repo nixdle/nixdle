@@ -35,9 +35,7 @@ features = ["thread_rng"]
 workspace = true
 optional = true
 [dependencies.serde_json]
-version = "1.0"
-default-features = false
-features = ["std"]
+workspace = true
 optional = true
 [dependencies.sqlx]
 version = "0.8.6"

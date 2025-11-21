@@ -3,9 +3,15 @@ if you want to help out, open a PR or an issue !!!!!!!!!
 
 lib:
 - write unit tests
-- implement better error handling
+- better error handling (see cli's thiserror implementation)
 - add logging with tracing
 - improve documentation (add embedded examples too)
+
+cli:
+- figure out how the FUCK does overriding default `--help` & `--version` descriptions work in clap
+- do something about the ^C panic when inputting data
+- implement arrow up/down completion
+- find a more maintainable way of displaying stats/attempt data
 
 i think that's it for now
 if you have any other ideas or suggestions, you know what to do !!!!

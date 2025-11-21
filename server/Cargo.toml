@@ -20,6 +20,7 @@ doc = false
 
 [dependencies.nixdle]
 workspace = true
+features = ["serde"]
 
 [dependencies.axum]
 version = "0.8.7"
@@ -27,7 +28,7 @@ default-features = false
 features = ["http1", "json", "tokio"]
 [dependencies.serde]
 workspace = true
+[dependencies.serde_json]
+workspace = true
 [dependencies.tokio]
-version = "1"
-default-features = false
-features = ["macros", "net", "rt-multi-thread"]
+workspace = true

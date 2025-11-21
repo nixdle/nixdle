@@ -16,11 +16,20 @@ categories = ["command-line-utilities", "games", "web-programming"]
 
 [workspace.dependencies.nixdle]
 path = "lib"
+default-features = false
 
 [workspace.dependencies.serde]
 version = "1.0"
 default-features = false
 features = ["derive"]
+[workspace.dependencies.serde_json]
+version = "1.0"
+default-features = false
+features = ["std"]
+[workspace.dependencies.tokio]
+version = "1"
+default-features = false
+features = ["macros", "net", "rt-multi-thread"]
 
 [profile.release]
 lto = "fat"

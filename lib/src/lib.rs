@@ -2,7 +2,7 @@
 
 use rand::prelude::IndexedRandom;
 
-mod api;
+pub mod api;
 mod function;
 mod game;
 
@@ -10,7 +10,7 @@ use api::{AttemptMessage, Matches, StartMessage};
 use function::Function;
 use game::Game;
 
-pub const NEXT_CLUE_ATTEMPTS: u8 = 5;
+pub const NEXT_CLUE_ATTEMPTS: usize = 5;
 
 /// contains everything needed to run
 #[derive(Clone)]
@@ -72,8 +72,11 @@ impl State {
     StartMessage {
       date: game.get_date(),
       attempt_url,
-      clue_attempts: NEXT_CLUE_ATTEMPTS,
       possible_clues: game.get_clues().len() as u8,
+      rules: format!(
+        "you can guess by full path (e.g. 'lib.mapAttrs')\nor by name (e.g. 'substring' for 'builtins.substring')\nafter each guess, you'll see how close you were to the actual function\nevery {} attempts, you'll get a new path clue",
+        NEXT_CLUE_ATTEMPTS
+      ),
       version: env!("CARGO_PKG_VERSION").to_string(),
       nix_commit: game.get_nix_commit().to_string(),
     }
@@ -81,7 +84,7 @@ impl State {
 
   /// attempts to guess the function
   /// returns None if the guess is invalid (i.e. not a known function)
-  pub fn attempt_game(&self, input: &str, attempts: u8) -> Option<AttemptMessage> {
+  pub fn attempt_game(&self, input: &str, attempts: usize) -> Option<AttemptMessage> {
     let input = input.trim();
     let game = self.game.as_ref().expect("where game??");
     let func = game.get_func();
@@ -115,7 +118,7 @@ impl State {
     let types_match = Matches::check_types((&guess_types.0, &guess_types.1), game.get_types());
     let args_match = Matches::check(guess_func.get_args_count() as u8, game.get_args_count());
 
-    let clues_many = (attempts / NEXT_CLUE_ATTEMPTS) as usize;
+    let clues_many = attempts / NEXT_CLUE_ATTEMPTS;
     let clues = all_clues.iter().take(clues_many).cloned().collect();
 
     Some(AttemptMessage {
@@ -149,12 +152,15 @@ impl State {
 
 /// parse functions from JSON data and filter out those without description or types
 #[cfg(feature = "serde")]
-pub fn parse_functions_filtered(data: &str) -> Result<Vec<Function>, serde_json::Error> {
+pub fn parse_functions_filtered(
+  builtin_types: &[(String, String)],
+  data: &str,
+) -> Result<Vec<Function>, serde_json::Error> {
   let functions: Vec<Function> = serde_json::from_str(data)?;
 
   let filtered: Vec<Function> = functions
     .into_iter()
-    .filter(|f| f.get_description().is_some() && f.get_types(&[]).is_some())
+    .filter(|f| f.get_description().is_some() && f.get_types(builtin_types).is_some())
     .collect();
 
   Ok(filtered)
@@ -168,8 +174,10 @@ pub fn parse_builtin_types(data: &str) -> Result<Vec<(String, String)>, serde_js
 
   if let serde_json::Value::Object(obj) = map {
     for (key, value) in obj {
-      if let serde_json::Value::String(type_str) = value {
-        types.push((key, type_str));
+      if let serde_json::Value::Object(inner) = value
+        && let Some(serde_json::Value::String(fn_type)) = inner.get("fn_type")
+      {
+        types.push((key, fn_type.clone()));
       }
     }
   }
