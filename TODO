@@ -6,6 +6,7 @@ lib:
 - better error handling (see cli's thiserror implementation)
 - add logging with tracing
 - improve documentation (add embedded examples too)
+- optimize function filtering & signature parsing
 
 cli:
 - figure out how the FUCK does overriding default `--help` & `--version` descriptions work in clap

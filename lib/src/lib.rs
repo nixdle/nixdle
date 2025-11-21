@@ -160,7 +160,11 @@ pub fn parse_functions_filtered(
 
   let filtered: Vec<Function> = functions
     .into_iter()
-    .filter(|f| f.get_description().is_some() && f.get_types(builtin_types).is_some())
+    .filter(|f| {
+      f.get_description().is_some()
+        && f.get_types(builtin_types).is_some()
+        && f.get_args_count() > 0
+    })
     .collect();
 
   Ok(filtered)

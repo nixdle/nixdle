@@ -18,13 +18,21 @@ impl Function {
 
   /// gets the number of arguments the function takes
   pub fn get_args_count(&self) -> usize {
-    self
-      .meta
-      .primop_meta
-      .as_ref()
-      .and_then(|p| p.args.as_ref())
-      .map(|args| args.len())
-      .unwrap_or(0)
+    if let Some(primop) = &self.meta.primop_meta
+      && let Some(args) = &primop.args
+    {
+      return args.len();
+    }
+
+    if let Some(signature) = &self.meta.signature {
+      let s = signature.trim().to_lowercase().replace(" ", "");
+      if let Some((_, input)) = s.split_once("::") {
+        let parts: Vec<&str> = input.split("->").map(|p| p.trim()).collect();
+        return parts.len().saturating_sub(1);
+      }
+    }
+
+    0
   }
 
   /// gets the function input & output types
@@ -125,10 +133,10 @@ impl Type {
 
 /// turns a signature into input & output types *magic*
 pub fn types_from_signature(sig: &str) -> Option<(Type, Type)> {
-  let s = sig.trim().to_lowercase();
-  let s = s.split_once(" :: ").map(|(_, t)| t.trim())?;
+  let s = sig.trim().to_lowercase().replace(" ", "");
+  let s = s.split_once("::").map(|(_, t)| t.trim())?;
 
-  let parts: Vec<&str> = s.split(" -> ").map(|p| p.trim()).collect();
+  let parts: Vec<&str> = s.split("->").map(|p| p.trim()).collect();
   let input = Type::from_str(parts.first()?)?;
   let output = Type::from_str(parts.get(1)?)?;
 

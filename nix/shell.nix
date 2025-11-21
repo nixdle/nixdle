@@ -5,6 +5,7 @@
   rustfmt,
   rust-analyzer,
   shellcheck,
+  cachix,
 }:
 
 let
@@ -14,6 +15,7 @@ let
     rustfmt
     rust-analyzer
     shellcheck
+    cachix
   ]
   ++ mainPkg.nativeBuildInputs;
 in

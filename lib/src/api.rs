@@ -39,7 +39,7 @@ pub enum Matches {
 }
 
 impl Matches {
-  pub fn check(actual: u8, guess: u8) -> Self {
+  pub fn check(guess: u8, actual: u8) -> Self {
     if guess < actual {
       Matches::TooLow
     } else if guess > actual {
