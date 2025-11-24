@@ -75,7 +75,7 @@ the script checks the following rules:
   - `ci`
   - `docs`
   - `chore`
-- the message must start and end with a lowercase letter
+- the message must start with a lowercase letter and end with a lowercase letter or number
 - first line (the header) must not exceed 50 characters
 - second line (if present) must be empty
 - subsequent lines (if present) must not exceed 72 characters

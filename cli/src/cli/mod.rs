@@ -96,6 +96,8 @@ pub fn print_attempt(clues: Vec<String>, args: String, input: bool, output: bool
       style("✘").red().bold()
     }
   );
+
+  write_line!("");
 }
 
 pub fn print_solved(func: &str, desc: &str, attempts: usize, seconds: u64, date: &str) {

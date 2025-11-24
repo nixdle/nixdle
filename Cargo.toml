@@ -4,7 +4,7 @@ members = ["lib", "cli", "server"]
 default-members = ["lib", "cli"]
 
 [workspace.package]
-version = "0.0.1"
+version = "0.0.1-alpha.1"
 authors = ["adam <me@adamperkowski.dev>"]
 edition = "2024"
 description = "wordle but it's nix functions"
@@ -26,6 +26,10 @@ features = ["derive"]
 version = "1.0"
 default-features = false
 features = ["std"]
+[workspace.dependencies.sqlx]
+version = "0.8.6"
+default-features = false
+features = ["chrono", "json", "macros"]
 [workspace.dependencies.tokio]
 version = "1"
 default-features = false

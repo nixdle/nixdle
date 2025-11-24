@@ -35,8 +35,8 @@ check_message() {
     return 1
   fi
 
-  if [[ ! "${msg[0]}" =~ ^[a-z] ]] || ! [[ "${msg: -1}" =~ ^[a-z] ]]; then
-    echo "message must start and end with a lowercase letter"
+  if [[ ! "${msg[0]}" =~ ^[a-z] ]] || ! [[ "${msg: -1}" =~ [a-z0-9]$ ]]; then
+    echo "message must start with a lowercase letter and end with a lowercase letter or number"
     return 1
   fi
 

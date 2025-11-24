@@ -3,8 +3,8 @@
 use rand::prelude::IndexedRandom;
 
 pub mod api;
-mod function;
-mod game;
+pub mod function;
+pub mod game;
 
 use api::{AttemptMessage, Matches, StartMessage};
 use function::Function;
@@ -85,12 +85,12 @@ impl State {
   /// attempts to guess the function
   /// returns None if the guess is invalid (i.e. not a known function)
   pub fn attempt_game(&self, input: &str, attempts: usize) -> Option<AttemptMessage> {
-    let input = input.trim();
+    let input = input.trim().to_lowercase();
     let game = self.game.as_ref().expect("where game??");
     let func = game.get_func();
     let all_clues = game.get_clues();
 
-    let guess_func = self.find_function(input)?;
+    let guess_func = self.find_function(&input)?;
 
     if input == func
       || guess_func.meta.path.join(".") == func

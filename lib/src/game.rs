@@ -1,5 +1,8 @@
 use crate::function::Type;
 
+#[cfg(feature = "sqlx")]
+use sqlx::types::{Json, chrono};
+
 /// represents a game instance
 #[derive(Clone)]
 #[cfg_attr(feature = "sqlx", derive(sqlx::FromRow))]
@@ -14,8 +17,14 @@ pub struct Game {
   /// number of arguments the function takes
   args: u8,
   /// input type
+  #[cfg(feature = "sqlx")]
+  input: Json<Type>,
+  #[cfg(not(feature = "sqlx"))]
   input: Type,
   /// output type
+  #[cfg(feature = "sqlx")]
+  output: Json<Type>,
+  #[cfg(not(feature = "sqlx"))]
   output: Type,
   /// nix commit hash
   nix_commit: String,
@@ -24,13 +33,20 @@ pub struct Game {
 }
 
 impl Game {
+  /// creates a new game instance
   pub fn new(func: String, description: String, args: u8, input: Type, output: Type) -> Self {
     Self {
       id: true,
       func,
       description,
       args,
+      #[cfg(feature = "sqlx")]
+      input: Json(input),
+      #[cfg(not(feature = "sqlx"))]
       input,
+      #[cfg(feature = "sqlx")]
+      output: Json(output),
+      #[cfg(not(feature = "sqlx"))]
       output,
       nix_commit: String::new(), // TODO: implement this
       created_at: chrono::Utc::now().naive_utc(),

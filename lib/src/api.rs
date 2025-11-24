@@ -31,6 +31,7 @@ pub struct AttemptMessage {
   pub output: bool,
 }
 
+/// how a guess compares to the actual value
 #[cfg_attr(feature = "serde", derive(Deserialize, Serialize))]
 pub enum Matches {
   TooLow,

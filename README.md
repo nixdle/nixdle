@@ -16,7 +16,8 @@ as you can probably see, this README and docs are almost non-existent and since 
 to play nixdle, simply run
 
 ```sh
-nix run github:nixdle/nixdle
+cachix use nixdle # optional, but recommended
+nix run github:nixdle/nixdle/stable
 ```
 
 ## contributing

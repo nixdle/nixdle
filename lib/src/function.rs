@@ -82,7 +82,7 @@ pub struct Meta {
 #[cfg_attr(feature = "serde", derive(Deserialize))]
 pub struct PrimopMeta {
   /// function arguments
-  args: Option<Vec<String>>,
+  pub args: Option<Vec<String>>,
 }
 
 /// function content
@@ -90,7 +90,7 @@ pub struct PrimopMeta {
 #[cfg_attr(feature = "serde", derive(Deserialize))]
 pub struct Content {
   /// function description
-  content: Option<String>,
+  pub content: Option<String>,
 }
 
 /// nix type

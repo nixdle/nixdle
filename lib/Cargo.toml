@@ -38,7 +38,5 @@ optional = true
 workspace = true
 optional = true
 [dependencies.sqlx]
-version = "0.8.6"
-default-features = false
-features = ["macros"]
+workspace = true
 optional = true
