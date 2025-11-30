@@ -1,4 +1,4 @@
-use console::style;
+use console::{Color, style};
 use dialoguer::theme::Theme as DialogTheme;
 use std::fmt;
 
@@ -10,8 +10,8 @@ pub enum Theme {
 }
 
 pub struct BaseTheme {
-  pub base: console::Color,
-  pub alt: console::Color,
+  pub base: Color,
+  pub alt: Color,
 }
 
 impl DialogTheme for BaseTheme {
@@ -44,16 +44,16 @@ impl DialogTheme for BaseTheme {
   }
 }
 
-impl BaseTheme {
-  pub fn from_theme(theme: Theme) -> Self {
+impl From<Theme> for BaseTheme {
+  fn from(theme: Theme) -> Self {
     match theme {
       Theme::Nix => BaseTheme {
-        base: console::Color::Blue,
-        alt: console::Color::Magenta,
+        base: Color::Blue,
+        alt: Color::Magenta,
       },
       Theme::Lix => BaseTheme {
-        base: console::Color::Magenta,
-        alt: console::Color::Blue,
+        base: Color::Magenta,
+        alt: Color::Blue,
       },
     }
   }

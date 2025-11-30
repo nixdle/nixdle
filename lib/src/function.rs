@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
@@ -109,24 +111,27 @@ pub enum Type {
   String,
 }
 
-impl Type {
-  pub fn from_str(s: &str) -> Option<Self> {
+pub struct InvalidType;
+
+impl FromStr for Type {
+  type Err = InvalidType;
+  fn from_str(s: &str) -> Result<Self, Self::Err> {
     match s.trim().to_lowercase().as_str() {
-      "any" => Some(Self::Any),
-      "attrset" => Some(Self::Attrset),
-      "bool" => Some(Self::Bool),
-      "float" => Some(Self::Float),
-      "int" => Some(Self::Int),
-      "never" => Some(Self::Never),
-      "path" => Some(Self::Path),
-      "string" => Some(Self::String),
-      a if a.starts_with('{') || a.ends_with('}') => Some(Self::Attrset),
+      "any" => Ok(Self::Any),
+      "attrset" => Ok(Self::Attrset),
+      "bool" => Ok(Self::Bool),
+      "float" => Ok(Self::Float),
+      "int" => Ok(Self::Int),
+      "never" => Ok(Self::Never),
+      "path" => Ok(Self::Path),
+      "string" => Ok(Self::String),
+      a if a.starts_with('{') || a.ends_with('}') => Ok(Self::Attrset),
       l if l.starts_with('[') && l.ends_with(']') => {
         let inner = &l[1..l.len() - 1];
         let inner_type = Self::from_str(inner)?;
-        Some(Self::List(Box::new(inner_type)))
+        Ok(Self::List(Box::new(inner_type)))
       }
-      _ => None,
+      _ => Err(InvalidType),
     }
   }
 }
@@ -137,8 +142,8 @@ pub fn types_from_signature(sig: &str) -> Option<(Type, Type)> {
   let s = s.split_once("::").map(|(_, t)| t.trim())?;
 
   let parts: Vec<&str> = s.split("->").map(|p| p.trim()).collect();
-  let input = Type::from_str(parts.first()?)?;
-  let output = Type::from_str(parts.get(1)?)?;
+  let input = Type::from_str(parts.first()?).ok()?;
+  let output = Type::from_str(parts.get(1)?).ok()?;
 
   Some((input, output))
 }

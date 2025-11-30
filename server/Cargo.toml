@@ -31,4 +31,6 @@ workspace = true
 [dependencies.serde_json]
 workspace = true
 [dependencies.tokio]
-workspace = true
+version = "1"
+default-features = false
+features = ["macros", "net", "rt-multi-thread"]

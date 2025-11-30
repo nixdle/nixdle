@@ -1,7 +1,7 @@
 use std::{fs, path::Path};
 
 use crate::crypto::verify_hmac;
-use crate::error::Result;
+use color_eyre::Result;
 
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
 pub struct Lockfile {
