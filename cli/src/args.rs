@@ -1,8 +1,4 @@
-use super::{
-  THEME,
-  theme::{BaseTheme, Theme},
-};
-use clap::Parser;
+use super::theme::Theme;
 
 #[derive(clap::Parser)]
 #[command(version, about)]
@@ -12,19 +8,8 @@ pub struct Cli {
   pub api: String,
   /// cli theme to use
   #[arg(short, long, value_name = "theme", default_value_t, value_enum)]
-  theme: Theme,
+  pub theme: Theme,
   /// don't show rules text
   #[arg(long)]
   pub hide_rules: bool,
-}
-
-pub fn parse() -> Cli {
-  let args = Cli::parse();
-
-  match args.theme {
-    Theme::Nix => *THEME.lock().unwrap() = BaseTheme::from_theme(Theme::Nix),
-    Theme::Lix => *THEME.lock().unwrap() = BaseTheme::from_theme(Theme::Lix),
-  }
-
-  args
 }

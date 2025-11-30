@@ -22,18 +22,16 @@ default-features = false
 version = "1.0"
 default-features = false
 features = ["derive"]
+
 [workspace.dependencies.serde_json]
 version = "1.0"
 default-features = false
 features = ["std"]
+
 [workspace.dependencies.sqlx]
 version = "0.8.6"
 default-features = false
 features = ["chrono", "json", "macros"]
-[workspace.dependencies.tokio]
-version = "1"
-default-features = false
-features = ["macros", "net", "rt-multi-thread"]
 
 [profile.release]
 lto = "fat"
